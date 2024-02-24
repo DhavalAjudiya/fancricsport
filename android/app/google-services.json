@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "853678159776",
+    "project_id": "fancric-db1b0",
+    "storage_bucket": "fancric-db1b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853678159776:android:2a6b9ad35724ffc5a0d6c5",
+        "android_client_info": {
+          "package_name": "com.example.fancricsport"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkfoh7dzjvbjY6FIpOjVRq_qecNTEia8o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

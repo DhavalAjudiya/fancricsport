@@ -23,9 +23,9 @@ class NewsDetailsPage extends StatelessWidget {
         backgroundColor: AppColor.blackDarkT,
         centerTitle: true,
         iconTheme: const IconThemeData(color: AppColor.silverColor),
-        title: AppText(matchController.newsAuthor.value ?? "",
+        title: AppText("News",
             color: AppColor.silverColor,
-            fontSize: SizeUtils.fSize_16(),
+            fontSize: SizeUtils.fSize_20(),
             fontWeight: FontWeight.w600),
       ),
       body: SafeArea(

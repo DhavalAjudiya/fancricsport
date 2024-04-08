@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:fancricsport/modual/Ads_helper/ad_constant.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 const int maxFailedLoadAttempts = 3;
@@ -16,11 +19,8 @@ class InterstitialAdClass {
   static bool isInterstitialAdLoaded = false;
   static bool isReadyToShowAd = true;
 
-  // static bool firstAdShowDelayed = true;
   static int _numInterstitialLoadAttempts = 0;
   static int interstitialAdShow = 0;
-  static bool isAdIsRewarded = false;
-  static late RewardedAd rewardAd;
 
   static void loadInterstitialAds() async {
     if (AdConstants.isShowAdsOrNot == true) {
@@ -29,36 +29,27 @@ class InterstitialAdClass {
       } else {
         loadAdMobAd("AdMobInterstitialAds");
       }
-
-      // if (firstAdShowDelayed) {
-      //   Future.delayed(Duration(seconds: AdConstants.firstCoolDown), () {
-      //     firstAdShowDelayed = false;
-      //   });
-      // }
     }
   }
 
   static loadFacebookAd(String adsType) {
-    print('InterstitialAdResult 1---${AdConstants.faceBookInterstitialId}');
-
     FacebookInterstitialAd.loadInterstitialAd(
       placementId: AdConstants.faceBookInterstitialId,
-      // placementId: "IMG_16_9_APP_INSTALL#2312433698835503_2650502525028617",
       listener: (result, value) {
         switch (result) {
           case InterstitialAdResult.LOADED:
             isFacebookInterstitialAdLoaded = true;
-            print('LOADED ads');
+            debugPrint('LOADED ads');
+
             break;
           case InterstitialAdResult.DISMISSED:
             isFacebookInterstitialAdLoaded = false;
-            print('DISMISSED ads');
+
             loadInterstitialAds();
             break;
           case InterstitialAdResult.ERROR:
             if (adsType != "AdMobInterstitialAds") {
-              loadAdMobAd("FacebookInterstitialAds");
-              print('InterstitialAdResult ee---${value}');
+              loadAdMobAd("AdMobInterstitialAds");
             }
             break;
           default:
@@ -70,21 +61,16 @@ class InterstitialAdClass {
   static loadAdMobAd(String adsType) {
     InterstitialAd.load(
       adUnitId: AdConstants.interstitialId,
-      // adUnitId: "ca-app-pub-3940256099942544/1033173712",
       request: request,
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
           adMobInterstitialAd = ad;
           _numInterstitialLoadAttempts = 0;
           isInterstitialAdLoaded = true;
-          // if(Utils.firstTimeAdShow) {
-          //   Utils.firstTimeAdShow = false;
-          //   adMobInterstitialAd.show();
-          // }
         },
         onAdFailedToLoad: (LoadAdError error) {
           if (adsType != "FacebookInterstitialAds") {
-            loadFacebookAd("AdMobInterstitialAds");
+            loadFacebookAd("FacebookInterstitialAds");
           }
           _numInterstitialLoadAttempts += 1;
           adMobInterstitialAd = null;
@@ -96,44 +82,23 @@ class InterstitialAdClass {
     );
   }
 
-  // static firstTimeDisplayAd() async {
-  //   if (dashBoardController.firstTimeAdShow) {
-  //     print('forInfoData in interstitialId===>>>${AdConstants.interstitialId}');
-  //     InterstitialAd.load(
-  //       adUnitId: AdConstants.interstitialId,
-  //       request: request,
-  //       adLoadCallback: InterstitialAdLoadCallback(
-  //         onAdLoaded: (InterstitialAd ad) {
-  //           dashBoardController.firstTimeAdShow = false;
-  //           adMobInterstitialAd = ad.show() as InterstitialAd;
-  //         },
-  //         onAdFailedToLoad: (LoadAdError error) {
-  //           firstTimeDisplayAd();
-  //         },
-  //       ),
-  //     );
-  //   }
-  // }
-
   static showInterstitialAds() {
     if (interstitialAdShow == AdConstants.adShowCount) {
       interstitialAdShow = 0;
       if (isReadyToShowAd && adMobInterstitialAd != null) {
         adMobInterstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
           onAdShowedFullScreenContent: (InterstitialAd ad) =>
-              print('ad onAdShowedFullScreenContent.'),
+              debugPrint('ad onAdShowedFullScreenContent.'),
           onAdDismissedFullScreenContent: (InterstitialAd ad) {
             ad.dispose();
             loadInterstitialAds();
           },
           onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-            print('$ad onAdFailedToShowFullScreenContent: $error');
             ad.dispose();
             loadInterstitialAds();
           },
         );
         adMobInterstitialAd?.show();
-
         adMobInterstitialAd = null;
         interstitialAdShow++;
         isReadyToShowAd = true;
@@ -145,42 +110,5 @@ class InterstitialAdClass {
     } else {
       interstitialAdShow++;
     }
-    /* if (!firstAdShowDelayed) {
-      if (isReadyToShowAd && adMobInterstitialAd != null) {
-        adMobInterstitialAd!.fullScreenContentCallback =
-            FullScreenContentCallback(
-          onAdShowedFullScreenContent: (InterstitialAd ad) =>
-              print('ad onAdShowedFullScreenContent.'),
-          onAdDismissedFullScreenContent: (InterstitialAd ad) {
-            ad.dispose();
-            loadInterstitialAds();
-          },
-          onAdFailedToShowFullScreenContent:
-              (InterstitialAd ad, AdError error) {
-            print('$ad onAdFailedToShowFullScreenContent: $error');
-            ad.dispose();
-            loadInterstitialAds();
-          },
-        );
-        adMobInterstitialAd!.show();
-        adMobInterstitialAd = null;
-        isReadyToShowAd = false;
-        // Future.delayed(
-        //   Duration(seconds: AdConstants.secondCoolDown),
-        //       () {
-        //     isReadyToShowAd = true;
-        //   },
-        // );
-      } else if (isReadyToShowAd && isFacebookInterstitialAdLoaded) {
-        FacebookInterstitialAd.showInterstitialAd();
-        isReadyToShowAd = false;
-        // Future.delayed(
-        //   Duration(seconds: AdConstants.secondCoolDown),
-        //       () {
-        //     isReadyToShowAd = true;
-        //   },
-        // );
-      } else {}
-    } else {}*/
   }
 }

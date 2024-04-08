@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:fancricsport/modual/dashboard/page/completed/complete_page.dart';
+import 'package:fancricsport/modual/dashboard/page/fantasy/fantasy_page.dart';
 import 'package:fancricsport/modual/dashboard/page/home/home_page.dart';
 import 'package:fancricsport/modual/dashboard/page/new/news_dart.dart';
 import 'package:fancricsport/modual/dashboard/page/upcoming/upcoming_page.dart';
@@ -23,7 +24,7 @@ class BottomPage extends StatefulWidget {
 class _BottomPageState extends State<BottomPage> {
   int pageIndex = 0;
 
-  final pages = [HomePage(), UpComingPage(), CompletedPage(), NewsPage()];
+  final pages = [HomePage(), FantasyPage(), UpComingPage(), CompletedPage(), NewsPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -70,9 +71,17 @@ class _BottomPageState extends State<BottomPage> {
                   label: "Live",
                 ),
                 BottomNavigationBarItem(
-                  icon: Image.asset(AssetsPath.upComing,
+                  icon: Image.asset(AssetsPath.fantasy,
                       height: SizeUtils.horizontalBlockSize * 7,
                       color: AppConfig.bottomBarValue.value == 1
+                          ? AppColor.white
+                          : AppColor.darkGrayTextDarkT),
+                  label: "Fantasy",
+                ),
+                BottomNavigationBarItem(
+                  icon: Image.asset(AssetsPath.upComing,
+                      height: SizeUtils.horizontalBlockSize * 7,
+                      color: AppConfig.bottomBarValue.value == 2
                           ? AppColor.white
                           : AppColor.darkGrayTextDarkT),
                   label: "UpComing",
@@ -80,7 +89,7 @@ class _BottomPageState extends State<BottomPage> {
                 BottomNavigationBarItem(
                   icon: Image.asset(AssetsPath.completed,
                       height: SizeUtils.horizontalBlockSize * 7,
-                      color: AppConfig.bottomBarValue.value == 2
+                      color: AppConfig.bottomBarValue.value == 3
                           ? AppColor.white
                           : AppColor.darkGrayTextDarkT),
                   label: "Completed",
@@ -88,7 +97,7 @@ class _BottomPageState extends State<BottomPage> {
                 BottomNavigationBarItem(
                   icon: Image.asset(AssetsPath.news,
                       height: SizeUtils.horizontalBlockSize * 7,
-                      color: AppConfig.bottomBarValue.value == 3
+                      color: AppConfig.bottomBarValue.value == 4
                           ? AppColor.white
                           : AppColor.darkGrayTextDarkT),
                   label: "News",

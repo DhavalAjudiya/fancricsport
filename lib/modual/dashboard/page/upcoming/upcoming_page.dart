@@ -70,7 +70,7 @@ class UpComingPage extends StatelessWidget {
                     return Column(
                       children: [
                         SizedBox(height: SizeUtils.horizontalBlockSize * 1.5),
-                        (index + 1) % 2 == 0 ? BannerAds(adSize: true) : const SizedBox(),
+                        (index + 1) % 2 == 0 ? const BannerAds() : const SizedBox(),
                         SizedBox(height: SizeUtils.horizontalBlockSize * 1.5),
                       ],
                     );

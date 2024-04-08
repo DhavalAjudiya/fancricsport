@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:fancricsport/modual/Ads_helper/ads/banner_ads_widget.dart';
 import 'package:fancricsport/modual/dashboard/controller/match_controller.dart';
@@ -24,7 +23,8 @@ class LiveMatchDataPage extends StatefulWidget {
 
 class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
   MatchController matchController = Get.find();
-  StreamController<List<LiveMatchDataModal>> streamController = StreamController();
+  StreamController<List<LiveMatchDataModal>> streamController =
+      StreamController();
 
   @override
   void initState() {
@@ -34,21 +34,23 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    streamController.close();
-  }
-
   Future<LiveMatchDataModal?> employeeControllerMethod() async {
-    matchController.liveMatchDataList.value =
-        await MatchService().liveData(matchController.matchId.value) ?? [];
-    streamController.sink.add(matchController.liveMatchDataList.value);
+    try {
+      matchController.liveMatchDataList =
+          await MatchService().liveData(matchController.matchId.value) ?? [];
+      streamController.sink.add(matchController.liveMatchDataList);
+      setState(() {});
+    } catch (e, st) {
+      debugPrint("ASDASDASDASD--$e");
+    }
   }
 
+  List<String> over = [];
   String? oversATeam, oversBTeam, playerARun, playerBRun;
+  int b1Run = 0, b2Run = 0;
   LMatchJsonDataModal? jsonData;
   LMatchJsonRunModal? jsonRun;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +67,7 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
         child: StreamBuilder<List<LiveMatchDataModal>>(
           stream: streamController.stream,
           builder: (context, snapshot) {
-            matchController.liveMatchDataList.value = snapshot.data ?? [];
+            matchController.liveMatchDataList = snapshot.data ?? [];
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
                 return const Center(
@@ -74,7 +76,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
               default:
                 if (snapshot.hasError) {
                   return Padding(
-                    padding: EdgeInsets.only(top: SizeUtils.horizontalBlockSize * 25),
+                    padding: EdgeInsets.only(
+                        top: SizeUtils.horizontalBlockSize * 25),
                     child: Column(
                       children: [
                         Image.asset(AssetsPath.empty),
@@ -86,12 +89,16 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                     ),
                   );
                 } else {
-                  final data = matchController.liveMatchDataList.value.first.jsondata;
-                  final dataR = matchController.liveMatchDataList.value.first.jsonruns;
+                  final data = matchController.liveMatchDataList.first.jsondata;
+                  final dataR =
+                      matchController.liveMatchDataList.first.jsonruns;
                   String last6Ball, ball = "", crr, rrr;
+                  String? b1, b2;
+
                   Jsondata? jData;
                   Jsonruns? jRun;
-                  if ((dataR?.isNotEmpty ?? false) && (data?.isNotEmpty ?? false)) {
+                  if ((dataR?.isNotEmpty ?? false) &&
+                      (data?.isNotEmpty ?? false)) {
                     String a = data.toString().replaceAll("\n", "");
                     String b = dataR.toString().replaceAll("\n", "");
                     Map<String, dynamic> mapData = jsonDecode(a);
@@ -100,6 +107,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                     jsonRun = LMatchJsonRunModal.fromJson(mapRun);
                     jData = jsonData?.jsondata;
                     jRun = jsonRun?.jsonruns;
+                    b1 = jData?.batsman.toString().split("*|").first;
+                    b2 = jData?.batsman.toString().split("*|").last;
 
                     if (data?.contains("C.RR") ?? false) {
                       crr = data.toString().split("C.RR: ").last;
@@ -112,21 +121,25 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                       rrr = "0.00000";
                     }
 
-                    if ((jData?.last6Balls.toString().contains(".-.-.-.-.-.") ?? false)) {
+                    if ((jData?.last6Balls.toString().contains(".-.-.-.-.-.") ??
+                        false)) {
                       last6Ball = "0-0-0-0-0-0";
                       ball = last6Ball.replaceAll("-", "").toString();
                     } else {
                       last6Ball = jData?.last6Balls.toString() ?? "";
-                      ball = last6Ball.replaceAll("-", "").toString().replaceAll("\"", "");
+                      ball = last6Ball
+                          .replaceAll("-", "")
+                          .toString()
+                          .replaceAll("\"", "");
                     }
-
-                    log("crr.toString().isNotEmpty---- 0.0 ${matchController.liveRunPlayerListA}");
                   } else {
                     jsonData = null;
                     jsonRun = null;
                     crr = "";
                     ball = "";
                     rrr = "";
+                    b1 = "";
+                    b2 = "";
                     oversATeam = "";
                     oversBTeam = "";
                     playerARun = "";
@@ -134,67 +147,41 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                   String? rtA1 = (jData?.testTeamARate1?.isNotEmpty ?? false)
                       ? jData?.testTeamARate1.toString()
                       : "00";
-                  /* teamRateA1.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                          ? teamRateA1.toString().split(",").first.replaceAll("\"", "")
-                          : "00";*/
+
                   String? rtA2 = (jData?.testTeamARate2?.isNotEmpty ?? false)
                       ? jData?.testTeamARate2.toString()
                       : "00";
-                  /* teamRateA2.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                          ? teamRateA2.toString().split(",").first.replaceAll("\"", "")
-                          : "00";*/
+
                   String? rtB1 = (jData?.testTeamBRate1?.isNotEmpty ?? false)
                       ? jData?.testTeamARate1.toString()
                       : "00";
-                  /* teamRateB1.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                          ? teamRateB1.toString().split(",").first.replaceAll("\"", "")
-                          : "00";*/
+
                   String? rtB2 = (jData?.testTeamBRate2?.isNotEmpty ?? false)
                       ? jData?.testTeamARate2.toString()
                       : "00";
-                  /* teamRateB2.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                          ? teamRateB2.toString().split(",").first.replaceAll("\"", "")
-                          : "00";*/
+
                   String? rd1 = (jData?.testdrawRate1?.isNotEmpty ?? false)
                       ? jData?.testdrawRate1.toString()
                       : "00";
-                  // drawRateA.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                  //     ? drawRateA.toString().split(",").first.replaceAll("\"", "")
-                  //     : "00";
+
                   String? rd2 = (jData?.testdrawRate2?.isNotEmpty ?? false)
                       ? jData?.testdrawRate2.toString()
                       : "00";
-                  /* drawRateB.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                          ? drawRateB.toString().split(",").first.replaceAll("\"", "")
-                          : "00";*/
+
                   String? r1 = (jData?.wicketB?.isNotEmpty ?? false)
                       ? jData?.wicketA.toString().split("/").first
                       : "00";
                   String? r2 = (jData?.wicketA?.isNotEmpty ?? false)
                       ? jData?.wicketB.toString().split("/").first
                       : "00";
-/*
-                  String r1 =
-                      wicketB.toString().split("/").first.replaceAll("\"", "").isNotEmpty
-                          ? wicketB.toString().split("/").first.replaceAll("\"", "")
-                          : "00";
-                  String r2 =
-                      wicketA.toString().split("/").first.replaceAll("\"", "").isNotEmpty
-                          ? wicketA.toString().split("/").first.replaceAll("\"", "")
-                          : "00";*/
+
                   String? s1 = (jData?.sessionA?.isNotEmpty ?? false)
                       ? jData?.sessionA.toString()
                       : "00";
-                  /*sessionA.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                          ? sessionA.toString().split(",").first.replaceAll("\"", "")
-                          : "00";*/
+
                   String? s2 = (jData?.sessionB?.isNotEmpty ?? false)
                       ? jData?.sessionB.toString()
                       : "00";
-                  /* sessionB.toString().split(",").first.replaceAll("\"", "").isNotEmpty
-                          ? sessionB.toString().split(",").first.replaceAll("\"", "")
-                          : "00";*/
-
                   return Column(
                     children: [
                       Padding(
@@ -221,16 +208,11 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                       w: SizeUtils.horizontalBlockSize * 10,
                                       loaderImage: AssetsPath.loaderImage,
                                       url: matchController.teamAImage.value +
-                                          (jData?.teamABanner.toString() ?? "")
-                                      /*teamImageA
-                                              .split(",")
-                                              .first
-                                              .replaceAll("-", "")
-                                              .toString()
-                                              .replaceAll("\"", "")*/
-                                      ,
+                                          (jData?.teamABanner.toString() ?? ""),
                                     ),
-                                    SizedBox(width: SizeUtils.horizontalBlockSize * 3),
+                                    SizedBox(
+                                        width:
+                                            SizeUtils.horizontalBlockSize * 3),
                                     AppText(
                                       (jData?.teamA?.isNotEmpty ?? false)
                                           ? (jData?.teamA.toString() ?? "")
@@ -243,22 +225,19 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                     Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
-                                        color:
-                                            int.parse(r1.toString()) < int.parse(r2.toString())
-                                                ? AppColor.redColor
-                                                : AppColor.greenTextDarkT,
+                                        color: int.parse(r1.toString()) <
+                                                int.parse(r2.toString())
+                                            ? AppColor.redColor
+                                            : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: AppText(
                                           (jData?.wicketA?.isNotEmpty ?? false)
-                                              ? (jData?.wicketA.toString() ?? "")
+                                              ? (jData?.wicketA.toString() ??
+                                                  "")
                                               : "0/0",
-                                          /* wicketA
-                                              .toString()
-                                              .split(",")
-                                              .first
-                                              .replaceAll("\"", ""),*/
                                           color: AppColor.white,
                                           fontWeight: FontWeight.w500,
                                           fontSize: SizeUtils.fSize_15(),
@@ -267,7 +246,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                     )
                                   ],
                                 ),
-                                SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                SizedBox(
+                                    height: SizeUtils.horizontalBlockSize * 2),
                                 Row(
                                   children: [
                                     imageLoader(
@@ -275,25 +255,15 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                         w: SizeUtils.horizontalBlockSize * 10,
                                         loaderImage: AssetsPath.loaderImage,
                                         url: matchController.teamAImage.value +
-                                            (jData?.teamBBanner.toString() ?? "")),
-                                    // teamImageB.split(",").first.replaceAll("\"", "")),
-                                    SizedBox(width: SizeUtils.horizontalBlockSize * 3),
+                                            (jData?.teamBBanner.toString() ??
+                                                "")),
+                                    SizedBox(
+                                        width:
+                                            SizeUtils.horizontalBlockSize * 3),
                                     AppText(
                                       (jData?.teamB?.isNotEmpty ?? false)
                                           ? (jData?.teamB.toString() ?? "")
                                           : matchController.teamBName.value,
-                                      /*    teamB
-                                              .toString()
-                                              .split(",")
-                                              .first
-                                              .replaceAll("\"", "")
-                                              .isNotEmpty
-                                          ? teamB
-                                              .toString()
-                                              .split(",")
-                                              .first
-                                              .replaceAll("\"", "")
-                                          : matchController.teamBName.value,*/
                                       color: AppColor.white,
                                       fontWeight: FontWeight.w500,
                                       fontSize: SizeUtils.fSize_15(),
@@ -303,22 +273,19 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                       decoration: BoxDecoration(
                                         // shape: BoxShape.circle,
                                         borderRadius: BorderRadius.circular(5),
-                                        color:
-                                            int.parse(r1.toString()) > int.parse(r2.toString())
-                                                ? AppColor.redColor
-                                                : AppColor.greenTextDarkT,
+                                        color: int.parse(r1.toString()) >
+                                                int.parse(r2.toString())
+                                            ? AppColor.redColor
+                                            : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3),
                                         child: AppText(
                                           (jData?.wicketB?.isNotEmpty ?? false)
-                                              ? (jData?.wicketB.toString() ?? "")
+                                              ? (jData?.wicketB.toString() ??
+                                                  "")
                                               : "0/0",
-                                          /*wicketB
-                                              .toString()
-                                              .split(",")
-                                              .first
-                                              .replaceAll("\"", ""),*/
                                           color: AppColor.white,
                                           fontWeight: FontWeight.w500,
                                           fontSize: SizeUtils.fSize_15(),
@@ -354,25 +321,26 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                               children: [
                                 AppText(
                                   jData?.score.toString() ?? "",
-                                  // score.toString().split(",").first.replaceAll("\"", ""),
                                   color: AppColor.bronzeColor,
                                   fontWeight: FontWeight.w500,
                                   fontSize: SizeUtils.fSize_16(),
                                 ),
-                                SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                SizedBox(
+                                    height: SizeUtils.horizontalBlockSize * 2),
                                 AppText(
-                                  "batsman : ${jData?.batsman.toString().split("*|").first ?? ""}",
+                                  "batsman : $b1",
                                   color: AppColor.darkGrayTextDarkT,
                                   fontWeight: FontWeight.w500,
                                   fontSize: SizeUtils.fSize_15(),
                                 ),
                                 AppText(
-                                  "batsman : ${jData?.batsman.toString().split("*|").last ?? ""}",
+                                  "batsman : $b2",
                                   color: AppColor.darkGrayTextDarkT,
                                   fontWeight: FontWeight.w500,
                                   fontSize: SizeUtils.fSize_15(),
                                 ),
-                                SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                SizedBox(
+                                    height: SizeUtils.horizontalBlockSize * 2),
                                 AppText(
                                   "PartnerShip : ${jData?.partnership.toString() ?? ""}",
                                   color: AppColor.darkGrayTextDarkT,
@@ -407,91 +375,115 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                               SizeUtils.horizontalBlockSize * 2,
                               SizeUtils.horizontalBlockSize * 2,
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            child: Column(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
+                                        Row(
+                                          children: [
+                                            AppText(
+                                              "Over :",
+                                              color: AppColor.darkGrayTextDarkT,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: SizeUtils.fSize_17(),
+                                            ),
+                                            SizedBox(
+                                              height: SizeUtils
+                                                      .horizontalBlockSize *
+                                                  5,
+                                              width: SizeUtils
+                                                      .horizontalBlockSize *
+                                                  42,
+                                              child: ListView.separated(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                itemCount: ball.length,
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemBuilder: (context, index) {
+                                                  return Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      color: ball[index] == "4"
+                                                          ? AppColor.locationBtn
+                                                          : ball[index] == "6"
+                                                              ? AppColor
+                                                                  .bronzeColor
+                                                              : ball[index] ==
+                                                                      "W"
+                                                                  ? AppColor
+                                                                      .redColor
+                                                                  : AppColor
+                                                                      .darkGrayTextDarkT,
+                                                    ),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 3),
+                                                      child: AppText(
+                                                        ball[index],
+                                                        color: AppColor.white,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: SizeUtils
+                                                            .fSize_12(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                separatorBuilder:
+                                                    (BuildContext context,
+                                                        int index) {
+                                                  return SizedBox(
+                                                    width: SizeUtils
+                                                            .horizontalBlockSize *
+                                                        2,
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            AppText(
+                                              "(${jData?.oversA != "" ? jData?.oversA : "00"})",
+                                              color: AppColor.pureWhite,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: SizeUtils.fSize_15(),
+                                            ),
+                                          ],
+                                        ),
                                         AppText(
-                                          "Over :",
+                                          "Blower : ${jData?.bowler != "" ? jData?.bowler : ""}",
                                           color: AppColor.darkGrayTextDarkT,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: SizeUtils.fSize_17(),
-                                        ),
-                                        SizedBox(
-                                          height: SizeUtils.horizontalBlockSize * 5,
-                                          width: SizeUtils.horizontalBlockSize * 41,
-                                          child: ListView.separated(
-                                            padding: const EdgeInsets.only(left: 10),
-                                            itemCount: ball.length,
-                                            scrollDirection: Axis.horizontal,
-                                            itemBuilder: (context, index) {
-                                              return Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(4),
-                                                  color: ball[index] == "4"
-                                                      ? AppColor.locationBtn
-                                                      : ball[index] == "6"
-                                                          ? AppColor.bronzeColor
-                                                          : ball[index] == "W"
-                                                              ? AppColor.redColor
-                                                              : AppColor.darkGrayTextDarkT,
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 3),
-                                                  child: AppText(
-                                                    ball[index],
-                                                    color: AppColor.white,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: SizeUtils.fSize_12(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            separatorBuilder:
-                                                (BuildContext context, int index) {
-                                              return SizedBox(
-                                                width: SizeUtils.horizontalBlockSize * 2,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        AppText(
-                                          "(${jData?.oversA != "" ? jData?.oversA : "00"})",
-                                          color: AppColor.pureWhite,
                                           fontWeight: FontWeight.w500,
                                           fontSize: SizeUtils.fSize_15(),
                                         ),
                                       ],
                                     ),
-                                    AppText(
-                                      "Blower : ${jData?.bowler != "" ? jData?.bowler : ""}",
-                                      color: AppColor.darkGrayTextDarkT,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: SizeUtils.fSize_15(),
+                                    Column(
+                                      children: [
+                                        AppText(
+                                          "C.RR : ${crr.toString().isNotEmpty ? crr.toString().substring(0, 4) : "0.00"}",
+                                          color: AppColor.linkBtn,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: SizeUtils.fSize_15(),
+                                        ),
+                                        AppText(
+                                          "R.RR : ${rrr.toString().isNotEmpty ? rrr.toString().substring(0, 4) : "0.00"}",
+                                          color: AppColor.linkBtn,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: SizeUtils.fSize_15(),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    AppText(
-                                      "C.RR : ${crr.toString().isNotEmpty ? crr.toString().substring(0, 4) : "0.00"}",
-                                      color: AppColor.linkBtn,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: SizeUtils.fSize_15(),
-                                    ),
-                                    AppText(
-                                      "R.RR : ${rrr.toString().isNotEmpty ? rrr.toString().substring(0, 4) : "0.00"}",
-                                      color: AppColor.linkBtn,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: SizeUtils.fSize_15(),
-                                    ),
-                                  ],
-                                )
                               ],
                             ),
                           ),
@@ -526,19 +518,23 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                       fontWeight: FontWeight.w500,
                                       fontSize: SizeUtils.fSize_14(),
                                     ),
-                                    SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                    SizedBox(
+                                        height:
+                                            SizeUtils.horizontalBlockSize * 2),
                                     Row(
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             color: int.parse(s1.toString()) <
                                                     int.parse(s2.toString())
                                                 ? AppColor.redColor
                                                 : AppColor.greenTextDarkT,
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 3),
                                             child: AppText(
                                               "${jData?.sessionA != "" ? jData?.sessionA : "00"}",
                                               // sessionA
@@ -552,17 +548,22 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: SizeUtils.horizontalBlockSize * 4),
+                                        SizedBox(
+                                            width:
+                                                SizeUtils.horizontalBlockSize *
+                                                    4),
                                         Container(
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                             color: int.parse(s1.toString()) >
                                                     int.parse(s2.toString())
                                                 ? AppColor.redColor
                                                 : AppColor.greenTextDarkT,
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 3),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 3),
                                             child: AppText(
                                               "${jData?.sessionB != "" ? jData?.sessionB : "00"}",
                                               /*sessionB
@@ -589,7 +590,9 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                       fontWeight: FontWeight.w500,
                                       fontSize: SizeUtils.fSize_14(),
                                     ),
-                                    SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                    SizedBox(
+                                        height:
+                                            SizeUtils.horizontalBlockSize * 2),
                                     AppText(
                                       "${jData?.sessionOver != "" ? jData?.sessionOver : "00"}",
 
@@ -613,11 +616,14 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                       fontWeight: FontWeight.w500,
                                       fontSize: SizeUtils.fSize_14(),
                                     ),
-                                    SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                    SizedBox(
+                                        height:
+                                            SizeUtils.horizontalBlockSize * 2),
                                     Row(
                                       children: [
                                         SizedBox(
-                                          width: SizeUtils.horizontalBlockSize * 12,
+                                          width: SizeUtils.horizontalBlockSize *
+                                              12,
                                           child: AppText(
                                             "${jRun?.runxa != "" ? jRun?.runxa : "0"}",
 
@@ -679,7 +685,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                     fontSize: SizeUtils.fSize_14(),
                                   ),
                                 ),
-                                SizedBox(height: SizeUtils.horizontalBlockSize * 3),
+                                SizedBox(
+                                    height: SizeUtils.horizontalBlockSize * 3),
                                 Row(
                                   children: [
                                     SizedBox(
@@ -713,7 +720,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                             : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: AppText(
                                           "${jData?.testTeamARate1 != "" ? jData?.testTeamARate1 : "0.0"}",
 
@@ -745,7 +753,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                             : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: AppText(
                                           "${jData?.testTeamARate2 != "" ? jData?.testTeamARate2 : "0.0"}",
 
@@ -769,7 +778,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                SizedBox(
+                                    height: SizeUtils.horizontalBlockSize * 2),
                                 Row(
                                   children: [
                                     SizedBox(
@@ -803,7 +813,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                             : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: AppText(
                                           "${jData?.testTeamBRate1 != "" ? jData?.testTeamBRate1 : "0.0"}",
 
@@ -835,7 +846,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                             : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: AppText(
                                           "${jData?.testTeamBRate2 != "" ? jData?.testTeamBRate2 : "0.0"}",
 
@@ -859,7 +871,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: SizeUtils.horizontalBlockSize * 2),
+                                SizedBox(
+                                    height: SizeUtils.horizontalBlockSize * 2),
                                 Row(
                                   children: [
                                     SizedBox(
@@ -880,7 +893,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                             : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: AppText(
                                           "${jData?.testdrawRate1 != "" ? jData?.testdrawRate1 : "0.0"}",
 
@@ -912,7 +926,8 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                                             : AppColor.greenTextDarkT,
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
                                         child: AppText(
                                           "${jData?.testdrawRate2 != "" ? jData?.testdrawRate2 : "0.0"}",
 
@@ -942,7 +957,7 @@ class _LiveMatchDataPageState extends State<LiveMatchDataPage> {
                         ),
                       ),
                       SizedBox(height: SizeUtils.horizontalBlockSize * 2),
-                      BannerAds(adSize: false),
+                      const BannerAds(),
                     ],
                   );
                 }

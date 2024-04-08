@@ -11,4 +11,7 @@ class AssetsPath {
   static String completed = "${assetsImages}cricket-ball.png";
   static String live = "${assetsImages}cricket_l.png";
   static String news = "${assetsImages}newspaper.png";
+  static String fantasy = "${assetsImages}fantasy.png";
+  static String fantasyIcon = "${assetsImages}fantasy_icon.png";
+  static String setting = "${assetsImages}setting.png";
 }

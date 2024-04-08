@@ -1,5 +1,4 @@
 class AdConstants {
-  /// for banner Add
   static int id = 0;
   static String url = '';
   static String redirectionLink = '';
@@ -20,7 +19,7 @@ class AdConstants {
   static String appstart = "0";
   static String opneapp = "0";
   static int adShowCount = 0;
-  static bool adShowOnDelayedOrCount = false;
+  static bool isBothAds = false;
   static bool isShowAdsOrNot = true;
   static bool isShowFacebookInterstitialAds = true;
   static bool isShowFacebookBannerAds = true;

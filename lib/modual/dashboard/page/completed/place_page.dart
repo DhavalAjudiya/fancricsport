@@ -2,6 +2,7 @@ import 'package:fancricsport/modual/Ads_helper/ads/banner_ads_widget.dart';
 import 'package:fancricsport/modual/dashboard/controller/match_controller.dart';
 import 'package:fancricsport/res/app_colors.dart';
 import 'package:fancricsport/res/assets_path.dart';
+import 'package:fancricsport/res/strings_utils.dart';
 import 'package:fancricsport/utils/size_utils.dart';
 import 'package:fancricsport/widget/app_text.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,13 @@ class PlacePage extends StatelessWidget {
         children: [
           matchController.matchStatusList.isEmpty
               ? Padding(
-                  padding: EdgeInsets.only(top: SizeUtils.horizontalBlockSize * 25),
+                  padding:
+                      EdgeInsets.only(top: SizeUtils.horizontalBlockSize * 25),
                   child: Center(
                     child: Column(
                       children: [
                         Image.asset(AssetsPath.empty),
-                        AppText("No Data found",
+                        AppText(AppString.noDatafound,
                             fontSize: SizeUtils.fSize_21(),
                             color: AppColor.darkGrayTextDarkT,
                             fontWeight: FontWeight.w600),
@@ -59,8 +61,10 @@ class PlacePage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(12)),
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: SizeUtils.horizontalBlockSize * 2,
-                                        vertical: SizeUtils.horizontalBlockSize * 2),
+                                        horizontal:
+                                            SizeUtils.horizontalBlockSize * 2,
+                                        vertical:
+                                            SizeUtils.horizontalBlockSize * 2),
                                     child: AppText(a,
                                         fontSize: SizeUtils.fSize_15(),
                                         color: AppColor.silverColor,
@@ -68,7 +72,7 @@ class PlacePage extends StatelessWidget {
                                   ),
                                 ),
                           SizedBox(height: SizeUtils.horizontalBlockSize * 2),
-                          a.isEmpty ? const SizedBox() : BannerAds(adSize: true),
+                          a.isEmpty ? const SizedBox() : const BannerAds(),
                           SizedBox(height: SizeUtils.horizontalBlockSize * 2),
                           b.isEmpty
                               ? const SizedBox()
@@ -79,8 +83,10 @@ class PlacePage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(12)),
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: SizeUtils.horizontalBlockSize * 2,
-                                        vertical: SizeUtils.horizontalBlockSize * 2),
+                                        horizontal:
+                                            SizeUtils.horizontalBlockSize * 2,
+                                        vertical:
+                                            SizeUtils.horizontalBlockSize * 2),
                                     child: AppText(b,
                                         fontSize: SizeUtils.fSize_15(),
                                         color: AppColor.silverColor,
@@ -88,7 +94,7 @@ class PlacePage extends StatelessWidget {
                                   ),
                                 ),
                           SizedBox(height: SizeUtils.horizontalBlockSize * 2),
-                          b.isEmpty ? const SizedBox() : BannerAds(adSize: true),
+                          b.isEmpty ? const SizedBox() : const BannerAds(),
                           SizedBox(height: SizeUtils.horizontalBlockSize * 2),
                           c.isEmpty
                               ? const SizedBox()
@@ -99,8 +105,10 @@ class PlacePage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(12)),
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: SizeUtils.horizontalBlockSize * 2,
-                                        vertical: SizeUtils.horizontalBlockSize * 2),
+                                        horizontal:
+                                            SizeUtils.horizontalBlockSize * 2,
+                                        vertical:
+                                            SizeUtils.horizontalBlockSize * 2),
                                     child: AppText(c,
                                         fontSize: SizeUtils.fSize_15(),
                                         color: AppColor.silverColor,
@@ -108,7 +116,7 @@ class PlacePage extends StatelessWidget {
                                   ),
                                 ),
                           SizedBox(height: SizeUtils.horizontalBlockSize * 2),
-                          c.isEmpty ? const SizedBox() : BannerAds(adSize: true),
+                          c.isEmpty ? const SizedBox() : const BannerAds(),
                           SizedBox(height: SizeUtils.horizontalBlockSize * 2),
                         ],
                       );

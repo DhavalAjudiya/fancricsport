@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../ad_constant.dart';
@@ -12,7 +10,7 @@ class AppOpenAdManager {
   /// Load an AppOpenAd.
   Future<void> loadAd({required String id}) async {
     await AppOpenAd.load(
-      adUnitId: id,
+      adUnitId: "$id",
       orientation: AppOpenAd.orientationPortrait,
       request: AdRequest(),
       adLoadCallback: AppOpenAdLoadCallback(
@@ -20,6 +18,7 @@ class AppOpenAdManager {
           _appOpenAd = ad;
         },
         onAdFailedToLoad: (error) {
+          print('AppOpenAd failed to load: $error');
           // Handle the error.
         },
       ),
@@ -28,7 +27,7 @@ class AppOpenAdManager {
 
   Future<void> loadSplashAds({required String id}) async {
     return AppOpenAd.load(
-      adUnitId: id,
+      adUnitId: "$id",
       orientation: AppOpenAd.orientationPortrait,
       request: AdRequest(),
       adLoadCallback: AppOpenAdLoadCallback(
@@ -37,7 +36,7 @@ class AppOpenAdManager {
           _appOpenAd!.show();
         },
         onAdFailedToLoad: (error) {
-          print('AppOpenAd loadSplashAds to load: $error');
+          print('AppOpenAd failed to load: $error');
           // Handle the error.
         },
       ),

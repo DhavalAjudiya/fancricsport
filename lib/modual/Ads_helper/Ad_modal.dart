@@ -25,9 +25,11 @@ class Adsmodel {
     this.privacypolicy,
     this.termsConditions,
     this.applink,
+    this.bothads,
   });
 
   bool? adsShowOrNot;
+  bool? bothads;
   String? interstitialId;
   String? termsConditions;
   String? privacypolicy;
@@ -50,6 +52,7 @@ class Adsmodel {
   ) {
     Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
     adsShowOrNot = data["adsShowOrNot"] == null ? null : data["adsShowOrNot"];
+    bothads = data["bothads"] == null ? null : data["bothads"];
     interstitialId = data["interstitialId"] == null ? null : data["interstitialId"];
     bannerId = data["bannerId"] == null ? null : data["bannerId"];
     privacypolicy = data["privacypolicy"] == null ? null : data["privacypolicy"];
@@ -71,11 +74,12 @@ class Adsmodel {
 
   factory Adsmodel.fromJson(Map<String, dynamic> json) => Adsmodel(
         adsShowOrNot: json["adsShowOrNot"] == null ? null : json["adsShowOrNot"],
+        bothads: json["bothads"] == null ? null : json["bothads"],
         interstitialId: json["interstitialId"] == null ? null : json["interstitialId"],
         bannerId: json["bannerId"] == null ? null : json["bannerId"],
         applink: json["applink"] == null ? null : json["applink"],
         privacypolicy: json["privacypolicy"] == null ? null : json["privacypolicy"],
-    termsConditions: json["termsConditions"] == null ? null : json["termsConditions"],
+        termsConditions: json["termsConditions"] == null ? null : json["termsConditions"],
         nativeId: json["nativeId"] == null ? null : json["nativeId"],
         firstCountDown: json["firstCountDown"] == null ? null : json["firstCountDown"],
         appstart: json["appstart"] == null ? null : json["appstart"],
@@ -92,6 +96,7 @@ class Adsmodel {
 
   Map<String, dynamic> toJson() => {
         "adsShowOrNot": adsShowOrNot ?? null,
+        "bothads": bothads ?? null,
         "interstitialId": interstitialId == null ? null : interstitialId,
         "bannerId": bannerId == null ? null : bannerId,
         "applink": applink == null ? null : applink,
@@ -100,7 +105,8 @@ class Adsmodel {
         "nativeId": nativeId == null ? null : nativeId,
         "firstCountDown": firstCountDown == null ? null : firstCountDown,
         "appstart": appstart == null ? null : appstart,
-        "faceBookInterstitialId": faceBookInterstitialId == null ? null : faceBookInterstitialId,
+        "faceBookInterstitialId":
+            faceBookInterstitialId == null ? null : faceBookInterstitialId,
         "adMobOrFaceBook": adMobOrFaceBook == null ? null : adMobOrFaceBook,
         "faceBookBannerId": faceBookBannerId == null ? null : faceBookBannerId,
         "faceBookNativeId": faceBookNativeId == null ? null : faceBookNativeId,

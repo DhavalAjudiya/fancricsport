@@ -1,14 +1,14 @@
 import 'dart:developer';
 
-import 'package:fancricsport/res/appconfig.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class SetAdIdController extends GetxController {
   Future<void> setAdsData() async {
     try {
-      AppConfig.databaseReference
-          .collection(AppConfig.advertisementData)
-          .doc(AppConfig.updateAdvertisementData)
+      await FirebaseFirestore.instance
+          .collection('AdvertisementData')
+          .doc("AdvertisementDetails")
           .set({
         'adsShowOrNot': true,
         'interstitialId': 'ca-app-pub-3940256099942544/1033173712',
@@ -20,7 +20,7 @@ class SetAdIdController extends GetxController {
         'faceBookInterstitialId': 'IMG_16_9_APP_INSTALL#2312433698835503_2650502525028617',
         'faceBookBannerId': 'IMG_16_9_APP_INSTALL#2312433698835503_2964944860251047',
         'faceBookNativeId': 'IMG_16_9_APP_INSTALL#2312433698835503_2964953543583512',
-        'appOpenAdsId': 'ca-app-pub-3940256099942544/9257395921',
+        'appOpenAdsId': 'ca-app-pub-3940256099942544/3419835294',
         'adMobOrFaceBook': 'admob',
         'applink': '',
         'privacypolicy': '',

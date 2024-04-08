@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:fancricsport/modual/Ads_helper/ad_constant.dart';
 import 'package:fancricsport/modual/Ads_helper/ads/open_app_ads.dart';
 import 'package:fancricsport/res/app_colors.dart';
 import 'package:fancricsport/utils/navigation_utils/navigation.dart';
 import 'package:fancricsport/utils/navigation_utils/routes.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
@@ -22,7 +20,6 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-
     startTimeOut();
   }
 
@@ -36,7 +33,8 @@ class _SplashPageState extends State<SplashPage> {
         width: double.infinity,
         decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("assets/image/splash.jpg"), fit: BoxFit.cover)),
+                image: AssetImage("assets/image/splash.jpg"),
+                fit: BoxFit.cover)),
         child: Image.asset(
           "assets/image/splash_loaderAnimation.gif",
           scale: 5,
@@ -49,7 +47,9 @@ class _SplashPageState extends State<SplashPage> {
     Timer(
       const Duration(seconds: 2),
       () {
-        appOpenAdManager.loadSplashAds(id: AdConstants.appOpenAdsId);
+        if (AdConstants.isShowAdsOrNot) {
+          appOpenAdManager.loadSplashAds(id: AdConstants.appOpenAdsId);
+        }
         Navigation.pushNamed(Routes.bottomPage);
       },
     );

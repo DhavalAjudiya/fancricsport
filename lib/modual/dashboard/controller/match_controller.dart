@@ -1,24 +1,22 @@
 import 'dart:async';
 import 'dart:developer';
+
 import 'package:fancricsport/modual/dashboard/modal/complete_modal.dart';
+import 'package:fancricsport/modual/dashboard/modal/fantasy_model.dart';
 import 'package:fancricsport/modual/dashboard/modal/getallplayer_modal.dart';
 import 'package:fancricsport/modual/dashboard/modal/live_matchmodal.dart';
 import 'package:fancricsport/modual/dashboard/modal/livematch_datamodal.dart';
 import 'package:fancricsport/modual/dashboard/modal/matchodds_modal.dart';
-import 'package:fancricsport/modual/dashboard/modal/matchstatus_modal.dart' as status;
+import 'package:fancricsport/modual/dashboard/modal/matchstatus_modal.dart'
+    as status;
 import 'package:fancricsport/modual/dashboard/modal/sportnews_modal.dart';
 import 'package:fancricsport/modual/dashboard/modal/upcomingmatch_modal.dart';
 import 'package:fancricsport/modual/dashboard/service/live_matchservice.dart';
 import 'package:get/get.dart';
 
 class MatchController extends GetxController {
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  RxList<LiveMatchModal> cricketModalList = <LiveMatchModal>[].obs;
-  RxList<LiveMatchDataModal> liveMatchDataList = <LiveMatchDataModal>[].obs;
+  List<LiveMatchModal> cricketModalList = <LiveMatchModal>[];
+  List<LiveMatchDataModal> liveMatchDataList = <LiveMatchDataModal>[];
   Rx<SportNews?> sportNewsList = SportNews().obs;
   Rx<UpComingMatchModal?> upComingMatchModalList = UpComingMatchModal().obs;
   Rx<CompletedModal?> completedList = CompletedModal().obs;
@@ -37,10 +35,24 @@ class MatchController extends GetxController {
   RxList<Playerslist> liveRunPlayerListA = <Playerslist>[].obs;
   RxList<Playerslist> liveRunPlayerListB = <Playerslist>[].obs;
 
+  RxList<Fantasy> fantasyList = <Fantasy>[].obs;
+  RxList<Fantasy> megaFantasyList = <Fantasy>[].obs;
+  RxList<Fantasy> headFantasyList = <Fantasy>[].obs;
+  RxList<Fantasy> smallFantasyList = <Fantasy>[].obs;
+  RxList<Playerstate> playerStateList = <Playerstate>[].obs;
+  RxString fantasyFTeam = "".obs;
+  RxString fantasySTeam = "".obs;
+  RxString fantasyTeamView = "".obs;
+  RxString fantasyTeamVImage = "".obs;
+  RxInt mega = 0.obs;
+  RxInt head = 0.obs;
+  RxInt small = 0.obs;
+
   RxString completedMatchId = "".obs;
   RxString completedTeamA = "".obs;
   RxString completedType = "".obs;
   RxString completedImage = "".obs;
+  RxBool itBall = false.obs;
 
   Future<SportNews?> sportNews() async {
     sportNewsList.value = await MatchService().newsData();

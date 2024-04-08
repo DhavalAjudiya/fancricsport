@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:853678159776:android:2a6b9ad35724ffc5a0d6c5",
+        "mobilesdk_app_id": "1:853678159776:android:02adef06d73cd6b5a0d6c5",
         "android_client_info": {
-          "package_name": "com.example.fancricsport"
+          "package_name": "com.fancricsport.fq"
         }
       },
       "oauth_client": [],

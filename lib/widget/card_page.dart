@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:fancricsport/res/app_colors.dart';
+import 'package:fancricsport/res/assets_path.dart';
 import 'package:fancricsport/utils/size_utils.dart';
 import 'package:fancricsport/widget/app_text.dart';
 import 'package:fancricsport/widget/image_lodar.dart';
@@ -708,6 +707,179 @@ completedCard({
           ),
         ),
       ],
+    ),
+  );
+}
+
+fantasyCard({
+  String? t1,
+  String? t2,
+  String? i1,
+  String? i2,
+  String? time,
+  int? m = 0,
+  int? h = 0,
+  int? s = 0,
+  int? e = 0,
+  bool? linUp,
+  GestureTapCallback? onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      decoration: BoxDecoration(
+          backgroundBlendMode: BlendMode.screen,
+          color: AppColor.bgColorDarkT,
+          borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: SizeUtils.horizontalBlockSize * 1.5),
+          Padding(
+            padding: EdgeInsets.only(right: SizeUtils.horizontalBlockSize * 3),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: RichText(
+                text: TextSpan(
+                    text: "Based on ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: SizeUtils.fSize_14(),
+                      color: AppColor.boarderColor,
+                      overflow: TextOverflow.fade,
+                    ),
+                    children: [
+                      TextSpan(
+                          text: e.toString(),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: SizeUtils.fSize_14(),
+                            color: AppColor.boarderColor,
+                            overflow: TextOverflow.fade,
+                          )),
+                      TextSpan(
+                          text: " Expert",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: SizeUtils.fSize_14(),
+                            color: AppColor.boarderColor,
+                            overflow: TextOverflow.fade,
+                          ))
+                    ]),
+              ),
+            ),
+          ),
+          SizedBox(height: SizeUtils.horizontalBlockSize * 1.5),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: SizeUtils.horizontalBlockSize * 3,
+              vertical: SizeUtils.verticalBlockSize * 0.3,
+            ),
+            child: Row(
+              children: [
+                imageLoader(
+                    h: SizeUtils.horizontalBlockSize * 8,
+                    w: SizeUtils.horizontalBlockSize * 8,
+                    url: i1 ?? ""),
+                SizedBox(width: SizeUtils.horizontalBlockSize * 3),
+                AppText(t1 ?? "",
+                    fontWeight: FontWeight.bold,
+                    fontSize: SizeUtils.fSize_15(),
+                    color: AppColor.silverColor),
+                const Spacer(),
+                AppText(
+                  t2 ?? "",
+                  fontWeight: FontWeight.bold,
+                  fontSize: SizeUtils.fSize_15(),
+                  color: AppColor.silverColor,
+                ),
+                SizedBox(width: SizeUtils.horizontalBlockSize * 3),
+                imageLoader(
+                  h: SizeUtils.horizontalBlockSize * 8,
+                  w: SizeUtils.horizontalBlockSize * 8,
+                  url: i2 ?? "",
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: AppText(time ?? "",
+                fontWeight: FontWeight.bold,
+                fontSize: SizeUtils.fSize_13(),
+                color: AppColor.darkGrayTextDarkT),
+          ),
+          SizedBox(height: SizeUtils.horizontalBlockSize * 1.5),
+          const Divider(color: Colors.grey, height: 0),
+          SizedBox(height: SizeUtils.horizontalBlockSize * 1.5),
+          m == 0
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 3),
+                  child: Row(
+                    children: [
+                      AppText(
+                        "Mega League Teams",
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeUtils.fSize_13(),
+                        color: AppColor.goldMainColor,
+                      ),
+                      const Spacer(),
+                      AppText(
+                        m.toString(),
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeUtils.fSize_14(),
+                        color: AppColor.goldMainColor,
+                      ),
+                    ],
+                  ),
+                ),
+          h == 0
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 3),
+                  child: Row(
+                    children: [
+                      AppText(
+                        "Head to Head Teams",
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeUtils.fSize_13(),
+                        color: AppColor.bronzeColor,
+                      ),
+                      const Spacer(),
+                      AppText(
+                        h.toString(),
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeUtils.fSize_14(),
+                        color: AppColor.bronzeColor,
+                      ),
+                    ],
+                  ),
+                ),
+          s == 0
+              ? const SizedBox.shrink()
+              : Padding(
+                  padding: EdgeInsets.symmetric(horizontal: SizeUtils.horizontalBlockSize * 3),
+                  child: Row(
+                    children: [
+                      AppText(
+                        "Small League Teams",
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeUtils.fSize_13(),
+                        color: AppColor.boarderColor,
+                      ),
+                      const Spacer(),
+                      AppText(
+                        s.toString(),
+                        fontWeight: FontWeight.bold,
+                        fontSize: SizeUtils.fSize_14(),
+                        color: AppColor.boarderColor,
+                      ),
+                    ],
+                  ),
+                ),
+          SizedBox(height: SizeUtils.horizontalBlockSize * 1.5),
+        ],
+      ),
     ),
   );
 }

@@ -1,15 +1,10 @@
-import 'dart:io';
-
 import 'package:fancricsport/modual/dashboard/controller/match_controller.dart';
-import 'package:fancricsport/modual/dashboard/page/completed/complete_page.dart';
 import 'package:fancricsport/modual/dashboard/page/completed/matchrun_page.dart';
 import 'package:fancricsport/modual/dashboard/page/completed/place_page.dart';
 import 'package:fancricsport/modual/dashboard/page/completed/scoreboad_page.dart';
-import 'package:fancricsport/modual/dashboard/page/home/home_page.dart';
-import 'package:fancricsport/modual/dashboard/page/new/news_dart.dart';
-import 'package:fancricsport/modual/dashboard/page/upcoming/upcoming_page.dart';
 import 'package:fancricsport/res/app_colors.dart';
 import 'package:fancricsport/res/appconfig.dart';
+import 'package:fancricsport/res/strings_utils.dart';
 import 'package:fancricsport/utils/size_utils.dart';
 import 'package:fancricsport/widget/app_text.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +14,8 @@ class CompletedPageBottomPage extends StatefulWidget {
   const CompletedPageBottomPage({Key? key}) : super(key: key);
 
   @override
-  State<CompletedPageBottomPage> createState() => _CompletedPageBottomPageState();
+  State<CompletedPageBottomPage> createState() =>
+      _CompletedPageBottomPageState();
 }
 
 class _CompletedPageBottomPageState extends State<CompletedPageBottomPage> {
@@ -69,24 +65,24 @@ class _CompletedPageBottomPageState extends State<CompletedPageBottomPage> {
             onTap: (value) async {
               AppConfig.completedBottomBarValue.value = value;
             },
-            items: const [
+            items: [
               BottomNavigationBarItem(
-                icon: Icon(
+                icon: const Icon(
                   Icons.score,
                 ),
-                label: "Score Box",
+                label: AppString.scoreBox,
               ),
               BottomNavigationBarItem(
-                icon: Icon(
+                icon: const Icon(
                   Icons.receipt_sharp,
                 ),
-                label: "Match Run",
+                label: AppString.matchRun,
               ),
               BottomNavigationBarItem(
-                icon: Icon(
+                icon: const Icon(
                   Icons.map,
                 ),
-                label: "Place",
+                label: AppString.place,
               ),
             ],
           );
